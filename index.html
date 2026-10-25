@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jiyyad Bypass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* pk = pink, cy = cyan, lm = hijau lime */
+  :root{--bg:#070815;--panel:#0b1022;--pk:#ff2d9b;--cy:#17e6ff;--lm:#b6ff3b;--mut:#8f8bc4}
+  [data-theme="merah"]{--pk:#ff2b4d;--cy:#ff8a3d;--lm:#ffd23b}
+  [data-theme="kuning"]{--pk:#ffb300;--cy:#fff200;--lm:#ffe14d}
+  [data-theme="hijau"]{--pk:#00ffa6;--cy:#39ff14;--lm:#c6ff00}
+  [data-theme="biru"]{--pk:#4d6dff;--cy:#00b7ff;--lm:#00f0ff}
+  [data-theme="ungu"]{--pk:#ff2bd6;--cy:#b44dff;--lm:#d08bff}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;font-family:"Outfit",system-ui,sans-serif;color:#e8e6ff;background:var(--bg);
+    padding:26px 18px 60px;overflow-x:hidden;position:relative}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse at 85% -5%,color-mix(in srgb,var(--pk) 24%,transparent),transparent 50%),
+      radial-gradient(ellipse at 0% 100%,color-mix(in srgb,var(--cy) 18%,transparent),transparent 50%),
+      linear-gradient(color-mix(in srgb,var(--cy) 6%,transparent) 1px,transparent 1px) 0 0/38px 38px,
+      linear-gradient(90deg,color-mix(in srgb,var(--cy) 6%,transparent) 1px,transparent 1px) 0 0/38px 38px}
+  .wrap{width:100%;max-width:520px;margin:0 auto;position:relative;z-index:1}
+
+  .pill{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:3px;
+    color:var(--lm);padding:10px 20px;border-radius:999px;border:1px solid color-mix(in srgb,var(--lm) 45%,transparent);
+    background:color-mix(in srgb,var(--lm) 10%,transparent)}
+  h1{font-family:"Syne","Arial Black",sans-serif;font-weight:800;font-size:clamp(40px,12.5vw,60px);line-height:1.05;margin:24px 0 18px;letter-spacing:-1px}
+  h1 .p{color:var(--pk);text-shadow:0 0 14px var(--pk),0 0 34px color-mix(in srgb,var(--pk) 60%,transparent)}
+  h1 .c{color:var(--cy);text-shadow:0 0 14px var(--cy),0 0 34px color-mix(in srgb,var(--cy) 60%,transparent)}
+  .lead{font-size:20px;line-height:1.75;color:var(--mut);margin-bottom:22px}
+
+  .themes{display:flex;align-items:center;gap:10px;margin:0 0 22px;flex-wrap:wrap}
+  .themes span{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--mut);letter-spacing:2px;margin-right:2px}
+  .dot{width:26px;height:26px;border-radius:50%;padding:0;border:2px solid #ffffff30;cursor:pointer;transition:transform .15s}
+  .dot.on{border-color:#fff;transform:scale(1.18)}
+  .dot[data-t="neon"]{background:linear-gradient(135deg,#ff2d9b,#17e6ff)}
+  .dot[data-t="merah"]{background:#ff2b4d}
+  .dot[data-t="kuning"]{background:#fff200}
+  .dot[data-t="hijau"]{background:#39ff14}
+  .dot[data-t="biru"]{background:#00b7ff}
+  .dot[data-t="ungu"]{background:#b44dff}
+
+  .card{background:var(--panel);border:1px solid var(--cy);border-radius:26px;padding:24px 22px;
+    box-shadow:0 0 22px color-mix(in srgb,var(--cy) 28%,transparent),inset 0 0 30px color-mix(in srgb,var(--cy) 6%,transparent)}
+  .lbl{font-family:"JetBrains Mono",monospace;font-size:15px;letter-spacing:3px;color:var(--cy);margin-bottom:14px}
+  .field{display:flex;align-items:center;gap:10px;background:#05060f;border:1px solid #ffffff14;border-radius:18px;padding:10px 10px 10px 18px}
+  .field input{flex:1;min-width:0;background:none;border:none;outline:none;color:#f1f0ff;font-family:"JetBrains Mono",monospace;font-size:17px}
+  .field input::placeholder{color:#4b4a74}
+  .field:focus-within{border-color:var(--cy);box-shadow:0 0 14px color-mix(in srgb,var(--cy) 40%,transparent)}
+  button{cursor:pointer;font-family:inherit;transition:transform .1s,box-shadow .2s,background .2s}
+  button:active{transform:scale(.97)}
+  .paste{font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--pk);background:none;
+    border:1px solid color-mix(in srgb,var(--pk) 55%,transparent);border-radius:12px;padding:12px 16px}
+  #go{width:100%;margin-top:16px;padding:20px;border:none;border-radius:20px;background:var(--lm);color:#08100a;
+    font-family:"Syne","Arial Black",sans-serif;font-weight:800;font-size:20px;letter-spacing:2px;
+    box-shadow:0 0 26px color-mix(in srgb,var(--lm) 55%,transparent)}
+  #go:disabled{opacity:.65}
+  .hint{margin-top:16px;color:var(--mut);font-size:17px}
+  .hint code{font-family:"JetBrains Mono",monospace;color:var(--cy)}
+
+  #result{display:none;margin-top:24px;border:1px solid color-mix(in srgb,var(--lm) 60%,transparent);border-radius:22px;padding:20px;background:#080b19}
+  #result.err{border-color:#ff4d6d}
+  .rt{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;letter-spacing:3px;color:var(--lm);margin-bottom:14px}
+  #result.err .rt{color:#ff6b86}
+  #out{font-family:"JetBrains Mono",monospace;font-size:16px;line-height:1.55;word-break:break-all;color:#f1f0ff;margin-bottom:16px}
+  .btns{display:grid;gap:12px}
+  .btns a,.btns button{display:block;text-align:center;text-decoration:none;font-family:"JetBrains Mono",monospace;
+    font-size:16px;font-weight:700;padding:15px;border-radius:16px;background:none;color:var(--cy);
+    border:1px solid color-mix(in srgb,var(--cy) 65%,transparent)}
+  .btns .rs{color:var(--mut);border-color:#ffffff22}
+  #result.err .btns{display:none}
+
+  #join{display:block;width:100%;margin-top:26px;padding:18px;border-radius:20px;background:none;color:var(--pk);
+    font-family:"JetBrains Mono",monospace;font-weight:700;font-size:16px;letter-spacing:1px;
+    border:1px solid var(--pk);box-shadow:0 0 18px color-mix(in srgb,var(--pk) 45%,transparent);animation:pulse 2.2s infinite}
+  @keyframes pulse{50%{box-shadow:0 0 30px color-mix(in srgb,var(--pk) 70%,transparent)}}
+  .sup{margin-top:22px;text-align:center;font-family:"JetBrains Mono",monospace;font-size:13px;color:#5e5c90}
+  .sup b{color:var(--pk)}
+
+  /* POPUP */
+  #modal{position:fixed;inset:0;background:rgba(3,4,12,.88);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
+  #modal.show{display:flex}
+  .pop{background:var(--panel);border:1px solid var(--pk);border-radius:26px;padding:26px 22px;max-width:370px;width:100%;text-align:center;
+    box-shadow:0 0 30px color-mix(in srgb,var(--pk) 45%,transparent);animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes pop{from{transform:scale(.2) rotate(-8deg);opacity:0}to{transform:scale(1);opacity:1}}
+  .pop .ic{font-size:46px;filter:drop-shadow(0 0 12px var(--cy))}
+  .pop h2{font-family:"Syne","Arial Black",sans-serif;font-weight:800;font-size:24px;color:var(--cy);margin:10px 0;text-shadow:0 0 12px var(--cy)}
+  .pop p{font-size:17px;line-height:1.5;margin-bottom:18px;color:var(--mut)}
+  .pop a{display:block;text-decoration:none;padding:16px;border-radius:16px;background:var(--lm);color:#08100a;
+    font-family:"Syne","Arial Black",sans-serif;font-weight:800;letter-spacing:1px;box-shadow:0 0 22px color-mix(in srgb,var(--lm) 55%,transparent)}
+  .pop .close{margin-top:14px;border:none;background:none;color:#6d6ba0;font-size:15px;text-decoration:underline}
+
+  /* BOOM */
+  #boom{position:fixed;inset:0;pointer-events:none;z-index:100}
+  .flash{position:fixed;inset:0;background:var(--cy);z-index:99;pointer-events:none;animation:flash .5s forwards}
+  @keyframes flash{0%{opacity:.7}100%{opacity:0}}
+  body.shake{animation:shake .5s}
+  @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-10px,6px)}40%{transform:translate(9px,-8px)}
+    60%{transform:translate(-7px,-5px)}80%{transform:translate(6px,7px)}}
+  .bigboom{position:fixed;left:50%;top:50%;font-family:"Syne","Arial Black",sans-serif;font-size:90px;font-weight:800;color:#fff;z-index:101;pointer-events:none;
+    text-shadow:0 0 12px var(--pk),0 0 30px var(--pk),0 0 56px var(--cy);
+    transform:translate(-50%,-50%) scale(0);animation:bb .8s ease-out forwards}
+  @keyframes bb{0%{transform:translate(-50%,-50%) scale(0) rotate(-15deg)}
+    40%{transform:translate(-50%,-50%) scale(1.3) rotate(5deg)}
+    100%{transform:translate(-50%,-50%) scale(1.6) rotate(0);opacity:0}}
+</style>
+</head>
+<body data-theme="neon">
+<canvas id="boom"></canvas>
+
+<div class="wrap">
+  <span class="pill">SFL / SAFELINK</span>
+  <h1><span class="p">Jiyyad</span> <span class="c">Bypass</span></h1>
+  <p class="lead">Tempel link sfl.gl, linkvertise, dll, tekan satu tombol, dan dapatkan alamat tujuan aslinya tanpa menunggu timer atau klik halaman perantara.</p>
+
+  <div class="themes">
+    <span>TEMA</span>
+    <button class="dot" data-t="neon" aria-label="Neon"></button>
+    <button class="dot" data-t="merah" aria-label="Merah"></button>
+    <button class="dot" data-t="kuning" aria-label="Kuning"></button>
+    <button class="dot" data-t="hijau" aria-label="Hijau"></button>
+    <button class="dot" data-t="biru" aria-label="Biru"></button>
+    <button class="dot" data-t="ungu" aria-label="Ungu"></button>
+  </div>
+
+  <div class="card">
+    <div class="lbl">LINK SFL</div>
+    <div class="field">
+      <input id="url" type="url" inputmode="url" autocomplete="off" placeholder="https://sfl.gl/...">
+      <button class="paste" id="paste">Tempel</button>
+    </div>
+    <button id="go">BYPASS</button>
+    <p class="hint">Contoh: <code>https://sfl.gl/xxxxxx</code></p>
+
+    <div id="result">
+      <div class="rt" id="rt">BERHASIL</div>
+      <div id="out"></div>
+      <div class="btns">
+        <button id="copy">Salin Link</button>
+        <a id="open" target="_blank" rel="noopener">Buka Link</a>
+        <button class="rs" id="reset">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="sup">&lt;/&gt; by <b>Jiyyad Tools</b></p>
+</div>
+
+<!-- POPUP SALURAN -->
+<div id="modal">
+  <div class="pop">
+    <div class="ic">💻</div>
+    <h2>Gabung Komunitas Jiyyad!</h2>
+    <p>Dapatkan tools &amp; update terbaru langsung di saluran WhatsApp Jiyyad</p>
+    <a id="chanLink" href="#" target="_blank" rel="noopener">MASUK SALURAN WHATSAPP</a>
+    <button class="close" id="closeModal">Nanti saja</button>
+  </div>
+</div>
+
+<script>
+/* ====== EDIT DI SINI ====== */
+const CHANNEL_URL = "https://whatsapp.com/channel/0029VbDOUI04NVinhn4Lvw0r";
+const API_URL = "https://api.zyvor.my.id/api/bypass/bypasslinkv2";
+/* ========================== */
+
+const $ = id => document.getElementById(id);
+$("chanLink").href = CHANNEL_URL;
+
+// ---- Tema warna ----
+function setTheme(t){
+  document.body.dataset.theme=t;
+  document.querySelectorAll(".dot").forEach(d=>d.classList.toggle("on",d.dataset.t===t));
+  try{localStorage.setItem("jiyyad-theme",t)}catch(e){}
+}
+document.querySelectorAll(".dot").forEach(d=>d.onclick=()=>setTheme(d.dataset.t));
+let saved="neon"; try{saved=localStorage.getItem("jiyyad-theme")||"neon"}catch(e){}
+setTheme(saved);
+
+// ---- Tempel dari clipboard ----
+$("paste").onclick=async()=>{
+  try{const t=await navigator.clipboard.readText(); if(t) $("url").value=t.trim();}
+  catch(e){$("url").focus()}
+};
+
+// ---- Bypass ----
+async function callApi(url){
+  const body = JSON.stringify({url});
+  const opt = {method:"POST",headers:{"Content-Type":"application/json"},body};
+  try{
+    const r = await fetch(API_URL,opt);
+    return await r.json();
+  }catch(e){
+    // fallback lewat proxy Vercel (folder api/) kalau kena CORS
+    const r = await fetch("/api/bypass",opt);
+    return await r.json();
+  }
+}
+// cari link hasil di mana pun posisinya dalam respon API (selain link asli yang kita kirim)
+function pickResult(d,input){
+  if(typeof d==="string") return /^https?:\/\//i.test(d)?d:null;
+  const urls=[];
+  (function walk(v,key){
+    if(typeof v==="string"){
+      if(/^https?:\/\//i.test(v) && !/original|source|input|request/i.test(key||"") && v!==input) urls.push({k:(key||"").toLowerCase(),v});
+    }else if(Array.isArray(v)){ v.forEach(x=>walk(x,key)); }
+    else if(v&&typeof v==="object"){ for(const k in v) walk(v[k],k); }
+  })(d,"");
+  if(!urls.length) return null;
+  for(const p of ["bypass","result","destination","final","target","direct","link","url"]){
+    const m=urls.find(u=>u.k.includes(p)); if(m) return m.v;
+  }
+  return urls[0].v;
+}
+$("go").onclick = async ()=>{
+  const url=$("url").value.trim();
+  if(!/^https?:\/\//i.test(url)){show("Masukkan link yang valid (diawali https://)",true);return;}
+  $("go").disabled=true; $("go").textContent="MEMPROSES...";
+  try{
+    const d=await callApi(url);
+    const res=pickResult(d,url);
+    if(res){show(res,false)}
+    else show("Link hasil tidak ditemukan di respon API:\n"+JSON.stringify(d).slice(0,700),true);
+  }catch(e){show("Tidak bisa terhubung ke API. Coba lagi nanti.",true)}
+  $("go").disabled=false; $("go").textContent="BYPASS";
+};
+function show(text,isErr){
+  const r=$("result"); r.style.display="block"; r.className=isErr?"err":"";
+  $("rt").textContent=isErr?"GAGAL":"BERHASIL";
+  $("out").textContent=text;
+  if(!isErr){$("open").href=text}
+}
+$("copy").onclick=async()=>{
+  try{await navigator.clipboard.writeText($("out").textContent);$("copy").textContent="Tersalin ✓"}
+  catch{$("copy").textContent="Tekan lama untuk salin"}
+  setTimeout(()=>$("copy").textContent="Salin Link",1500);
+};
+$("reset").onclick=()=>{$("url").value="";$("result").style.display="none";$("url").focus()};
+
+// ---- Suara 8-bit retro ala game arcade (dibuat langsung di browser, tanpa file mp3) ----
+let ac=null;
+function boomSound(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    ac=ac||new AC(); if(ac.state==="suspended") ac.resume();
+    const t=ac.currentTime;
+    const master=ac.createGain(); master.gain.value=.5; master.connect(ac.destination);
+    // 1) ledakan chiptune: nada kotak jatuh dari tinggi ke rendah
+    const o=ac.createOscillator(); o.type="square";
+    o.frequency.setValueAtTime(900,t); o.frequency.exponentialRampToValueAtTime(70,t+.4);
+    const og=ac.createGain(); og.gain.setValueAtTime(.9,t); og.gain.exponentialRampToValueAtTime(.001,t+.45);
+    o.connect(og); og.connect(master); o.start(t); o.stop(t+.5);
+    // 2) desis noise pendek
+    const len=Math.floor(ac.sampleRate*.35);
+    const buf=ac.createBuffer(1,len,ac.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=((Math.random()*2-1)>0?1:-1)*Math.pow(1-i/len,2);
+    const n=ac.createBufferSource(); n.buffer=buf;
+    const ng=ac.createGain(); ng.gain.value=.5; n.connect(ng); ng.connect(master); n.start(t);
+    // 3) bunyi "bip" kemenangan 4 nada naik
+    [440,523,659,880].forEach((f,i)=>{
+      const s=t+.45+i*.09;
+      const b=ac.createOscillator(); b.type="square"; b.frequency.setValueAtTime(f,s);
+      const bg=ac.createGain(); bg.gain.setValueAtTime(.45,s); bg.gain.exponentialRampToValueAtTime(.001,s+.12);
+      b.connect(bg); bg.connect(master); b.start(s); b.stop(s+.13);
+    });
+  }catch(e){}
+}
+
+// ---- Popup + BOOM ----
+// popup muncul otomatis saat web dibuka (efek visual saja, suara menunggu sentuhan pengguna)
+setTimeout(()=>{ boom(false); setTimeout(()=>$("modal").classList.add("show"),350); },900);
+// tombol masuk saluran: BOOM + suara, lalu link terbuka seperti biasa
+$("chanLink").addEventListener("click",()=>boom(true));
+$("closeModal").onclick=()=>$("modal").classList.remove("show");
+$("modal").onclick=e=>{if(e.target.id==="modal")$("modal").classList.remove("show")};
+
+const cv=$("boom"),cx=cv.getContext("2d");
+function fit(){cv.width=innerWidth;cv.height=innerHeight} fit(); addEventListener("resize",fit);
+function boom(withSound=true){
+  if(withSound) boomSound();
+  const f=document.createElement("div");f.className="flash";document.body.appendChild(f);setTimeout(()=>f.remove(),600);
+  document.body.classList.add("shake");setTimeout(()=>document.body.classList.remove("shake"),520);
+  const t=document.createElement("div");t.className="bigboom";t.textContent="BOOM!";document.body.appendChild(t);setTimeout(()=>t.remove(),900);
+  if(navigator.vibrate)navigator.vibrate([80,40,120]);
+  const cs=getComputedStyle(document.body);
+  const cols=[cs.getPropertyValue("--pk").trim(),cs.getPropertyValue("--cy").trim(),cs.getPropertyValue("--lm").trim(),"#fff"];
+  const ps=Array.from({length:130},()=>{
+    const a=Math.random()*Math.PI*2,s=3+Math.random()*11;
+    return{x:cv.width/2,y:cv.height/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:2+Math.random()*5,
+      c:cols[Math.random()*cols.length|0],life:1}});
+  (function step(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    let alive=false;
+    for(const p of ps){
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.18;p.vx*=.985;p.life-=.016;
+      if(p.life>0){alive=true;cx.globalAlpha=p.life;cx.fillStyle=p.c;cx.shadowColor=p.c;cx.shadowBlur=14;
+        cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill()}
+    }
+    if(alive)requestAnimationFrame(step);else cx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+</script>
+</body>
+</html>
